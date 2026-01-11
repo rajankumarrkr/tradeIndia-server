@@ -3,8 +3,8 @@ const cors = require("cors");
 const dotenv = require("dotenv");
 const cron = require("node-cron");
 
-const connectDB = require("./config/db");
-const routes = require("./routes");
+const connectDB = require("./src/config/db");
+const routes = require("./src/routes");
 
 dotenv.config();
 
