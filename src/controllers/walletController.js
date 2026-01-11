@@ -2,6 +2,7 @@ const Wallet = require("../models/Wallet");
 const Plan = require("../models/Plan");
 const Investment = require("../models/Investment");
 const Transaction = require("../models/Transaction");
+const User = require("../models/User");
 
 const ensureWallet = async (userId) => {
   let wallet = await Wallet.findOne({ user: userId });
