@@ -69,7 +69,7 @@ const login = async (req, res) => {
       return res.json({
         message: "Admin login successful",
         user: {
-          id: "admin-id",
+          id: "000000000000000000000000", // Valid ObjectId format to avoid CastError
           name: "Administrator",
           mobile: "svcet",
           isAdmin: true

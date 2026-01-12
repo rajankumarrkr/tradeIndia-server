@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Wallet = require("../models/Wallet");
 const Transaction = require("../models/Transaction");
 const BankAccount = require("../models/BankAccount");
@@ -6,6 +7,10 @@ const MIN_AMOUNT = 300;
 const GST_PERCENT = 15;
 
 const ensureWallet = async (userId) => {
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    console.warn(`Invalid userId format in payment: ${userId}`);
+    return null;
+  }
   let wallet = await Wallet.findOne({ user: userId });
   if (!wallet) {
     wallet = await Wallet.create({ user: userId, balance: 0 });
@@ -26,6 +31,10 @@ const createRecharge = async (req, res) => {
       return res
         .status(400)
         .json({ message: `Minimum recharge amount is ${MIN_AMOUNT}` });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
 
     const tx = await Transaction.create({
@@ -61,7 +70,14 @@ const createWithdrawal = async (req, res) => {
         .json({ message: `Minimum withdrawal amount is ${MIN_AMOUNT}` });
     }
 
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
+    }
+
     const wallet = await ensureWallet(userId);
+    if (!wallet) {
+      return res.status(400).json({ message: "Invalid wallet setup" });
+    }
 
     if (wallet.balance < amount) {
       return res.status(400).json({ message: "Insufficient wallet balance" });

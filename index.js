@@ -62,9 +62,9 @@ cron.schedule("0 0 * * *", async () => {
   console.log("Running daily ROI job");
 
   try {
-    const Investment = require("./models/Investment");
-    const Wallet = require("./models/Wallet");
-    const Transaction = require("./models/Transaction");
+    const Investment = require("./src/models/Investment");
+    const Wallet = require("./src/models/Wallet");
+    const Transaction = require("./src/models/Transaction");
 
     const investments = await Investment.find({ isActive: true });
 

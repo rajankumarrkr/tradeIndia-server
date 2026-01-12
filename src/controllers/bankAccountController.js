@@ -1,4 +1,4 @@
-// controllers/bankAccountController.js
+const mongoose = require("mongoose");
 const BankAccount = require("../models/BankAccount");
 
 const addBankAccount = async (req, res) => {
@@ -8,6 +8,10 @@ const addBankAccount = async (req, res) => {
 
     if (!userId || !accountHolder || !bankName || !accountNumber || !ifsc) {
       return res.status(400).json({ message: "All fields are required" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
 
     const bank = await BankAccount.create({
@@ -32,6 +36,10 @@ const getBankAccounts = async (req, res) => {
 
     if (!userId) {
       return res.status(400).json({ message: "userId is required" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
 
     const list = await BankAccount.find({ user: userId }).sort({

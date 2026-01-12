@@ -1,3 +1,4 @@
+const mongoose = require("mongoose");
 const Wallet = require("../models/Wallet");
 const Plan = require("../models/Plan");
 const Investment = require("../models/Investment");
@@ -5,6 +6,10 @@ const Transaction = require("../models/Transaction");
 const User = require("../models/User");
 
 const ensureWallet = async (userId) => {
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    console.warn(`Invalid userId format: ${userId}`);
+    return null;
+  }
   let wallet = await Wallet.findOne({ user: userId });
   if (!wallet) {
     wallet = await Wallet.create({ user: userId, balance: 0 });
@@ -26,6 +31,9 @@ const buyPlan = async (req, res) => {
     }
 
     const wallet = await ensureWallet(userId);
+    if (!wallet) {
+      return res.status(400).json({ message: "Invalid user or wallet setup" });
+    }
 
     if (wallet.balance < plan.investAmount) {
       return res.status(400).json({ message: "Insufficient wallet balance" });
@@ -71,6 +79,10 @@ const getWalletInfo = async (req, res) => {
 
     if (!userId) {
       return res.status(400).json({ message: "userId is required" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID format" });
     }
 
     const wallet = await Wallet.findOne({ user: userId });
