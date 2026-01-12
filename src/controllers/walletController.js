@@ -17,60 +17,6 @@ const ensureWallet = async (userId) => {
   return wallet;
 };
 
-const buyPlan = async (req, res) => {
-  try {
-    const { userId, planId } = req.body;
-
-    if (!userId || !planId) {
-      return res.status(400).json({ message: "userId and planId are required" });
-    }
-
-    const plan = await Plan.findById(planId);
-    if (!plan || !plan.isActive) {
-      return res.status(400).json({ message: "Invalid plan" });
-    }
-
-    const wallet = await ensureWallet(userId);
-    if (!wallet) {
-      return res.status(400).json({ message: "Invalid user or wallet setup" });
-    }
-
-    if (wallet.balance < plan.investAmount) {
-      return res.status(400).json({ message: "Insufficient wallet balance" });
-    }
-
-    wallet.balance -= plan.investAmount;
-    await wallet.save();
-
-    const investment = await Investment.create({
-      user: userId,
-      plan: plan._id,
-      investAmount: plan.investAmount,
-      dailyIncome: plan.dailyIncome,
-      durationDays: plan.durationDays,
-      totalIncome: plan.totalIncome,
-      daysCompleted: 0,
-      isActive: true,
-    });
-
-    await Transaction.create({
-      user: userId,
-      type: "plan_buy",
-      amount: plan.investAmount,
-      status: "success",
-      meta: { planId: plan._id },
-    });
-
-    res.status(201).json({
-      message: "Plan purchased successfully",
-      investment,
-      walletBalance: wallet.balance,
-    });
-  } catch (err) {
-    console.error("Buy plan error:", err);
-    res.status(500).json({ message: "Server error" });
-  }
-};
 
 
 const getWalletInfo = async (req, res) => {
@@ -141,4 +87,4 @@ const getUserTransactions = async (req, res) => {
   }
 };
 
-module.exports = { buyPlan, getWalletInfo, getTeamInfo, getUserTransactions };
+module.exports = { getWalletInfo, getTeamInfo, getUserTransactions };

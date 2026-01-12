@@ -1,4 +1,21 @@
 const Plan = require("../models/Plan");
+const Wallet = require("../models/Wallet");
+const Investment = require("../models/Investment");
+const Transaction = require("../models/Transaction");
+const User = require("../models/User");
+const mongoose = require("mongoose");
+
+const ensureWallet = async (userId) => {
+  if (!mongoose.Types.ObjectId.isValid(userId)) {
+    console.warn(`Invalid userId format: ${userId}`);
+    return null;
+  }
+  let wallet = await Wallet.findOne({ user: userId });
+  if (!wallet) {
+    wallet = await Wallet.create({ user: userId, balance: 0 });
+  }
+  return wallet;
+};
 
 const getPlans = async (req, res) => {
   try {
@@ -56,4 +73,59 @@ const deletePlan = async (req, res) => {
   }
 };
 
-module.exports = { getPlans, createPlan, updatePlan, deletePlan };
+const buyPlan = async (req, res) => {
+  try {
+    const { userId, planId } = req.body;
+
+    if (!userId || !planId) {
+      return res.status(400).json({ message: "userId and planId are required" });
+    }
+
+    const plan = await Plan.findById(planId);
+    if (!plan || !plan.isActive) {
+      return res.status(400).json({ message: "Invalid plan" });
+    }
+
+    const wallet = await ensureWallet(userId);
+    if (!wallet) {
+      return res.status(400).json({ message: "Invalid user or wallet setup" });
+    }
+
+    if (wallet.balance < plan.investAmount) {
+      return res.status(400).json({ message: "Insufficient wallet balance" });
+    }
+
+    wallet.balance -= plan.investAmount;
+    await wallet.save();
+
+    const investment = await Investment.create({
+      user: userId,
+      plan: plan._id,
+      investAmount: plan.investAmount,
+      dailyIncome: plan.dailyIncome,
+      durationDays: plan.durationDays,
+      totalIncome: plan.totalIncome,
+      daysCompleted: 0,
+      isActive: true,
+    });
+
+    await Transaction.create({
+      user: userId,
+      type: "plan_buy",
+      amount: plan.investAmount,
+      status: "success",
+      meta: { planId: plan._id },
+    });
+
+    res.status(201).json({
+      message: "Plan purchased successfully",
+      investment,
+      walletBalance: wallet.balance,
+    });
+  } catch (err) {
+    console.error("Buy plan error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { getPlans, createPlan, updatePlan, deletePlan, buyPlan };
