@@ -1,52 +1,22 @@
 const express = require("express");
 const router = express.Router();
 
-const authController = require("../controllers/authController");
-const planController = require("../controllers/planController");
-const walletController = require("../controllers/walletController");
-const paymentController = require("../controllers/paymentController");
-const bankAccountController = require("../controllers/bankAccountController");
-const adminController = require("../controllers/adminController");
-
+const authRoutes = require("./authRoutes");
+const planRoutes = require("./planRoutes");
+const walletRoutes = require("./walletRoutes");
+const paymentRoutes = require("./paymentRoutes");
+const bankRoutes = require("./bankRoutes");
+const adminRoutes = require("./adminRoutes");
 
 router.get("/health", (req, res) => {
   res.json({ status: "ok", message: "TradeIndia API running" });
 });
 
-// auth
-router.post("/auth/register", authController.register);
-router.post("/auth/login", authController.login);
-
-// plans
-router.post("/plans/seed", planController.seedPlans);
-router.get("/plans", planController.getPlans);
-router.post("/plans/buy", walletController.buyPlan);
-
-// wallet info
-router.get("/wallet/:userId", walletController.getWalletInfo);
-router.get("/team/:userId", walletController.getTeamInfo);
-
-// payments
-router.post("/recharge", paymentController.createRecharge);
-router.post("/withdraw", paymentController.createWithdrawal);
-
-// bank accounts
-router.post("/bank-accounts", bankAccountController.addBankAccount);
-router.get("/bank-accounts", bankAccountController.getBankAccounts);
-
-// admin
-router.get("/admin/users", adminController.getUsers);
-router.put("/admin/users/:userId/block", adminController.toggleUserBlock);
-router.post("/admin/add-amount", adminController.addAmountToWallet);
-router.get("/admin/pending-transactions", adminController.getPendingTransactions);
-router.post("/admin/approve-recharge/:txId", adminController.approveRecharge);
-router.post("/admin/approve-withdrawal/:txId", adminController.approveWithdrawal);
-
-// settings
-router.get("/settings", adminController.getSettings);
-router.post("/settings", adminController.updateSettings);
-
-// User Transactions
-router.get("/transactions/:userId", walletController.getUserTransactions);
+router.use("/auth", authRoutes);
+router.use("/plans", planRoutes);
+router.use("/wallet", walletRoutes);
+router.use("/", paymentRoutes); // paymentRoutes contains /recharge and /withdraw
+router.use("/bank-accounts", bankRoutes);
+router.use("/admin", adminRoutes);
 
 module.exports = router;
