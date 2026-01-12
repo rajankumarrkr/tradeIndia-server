@@ -128,4 +128,20 @@ const buyPlan = async (req, res) => {
   }
 };
 
-module.exports = { getPlans, createPlan, updatePlan, deletePlan, buyPlan };
+const getUserInvestments = async (req, res) => {
+  try {
+    const { userId } = req.params;
+    if (!userId || !mongoose.Types.ObjectId.isValid(userId)) {
+      return res.status(400).json({ message: "Invalid user ID" });
+    }
+    const investments = await Investment.find({ user: userId })
+      .populate("plan")
+      .sort({ createdAt: -1 });
+    res.json(investments);
+  } catch (err) {
+    console.error("Get user investments error:", err);
+    res.status(500).json({ message: "Server error" });
+  }
+};
+
+module.exports = { getPlans, createPlan, updatePlan, deletePlan, buyPlan, getUserInvestments };
