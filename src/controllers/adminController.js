@@ -88,7 +88,7 @@ const approveRecharge = async (req, res) => {
 
     // Team income: 10% to referrer
     const user = await User.findById(tx.user);
-    if (user.referredBy) {
+    if (user && user.referredBy) {
       const referrerWallet = await Wallet.findOne({ user: user.referredBy });
       if (referrerWallet) {
         const teamIncome = tx.amount * 0.1;

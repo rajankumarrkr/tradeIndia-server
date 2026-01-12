@@ -4,7 +4,7 @@ const adminController = require("../controllers/adminController");
 const planController = require("../controllers/planController");
 
 router.get("/users", adminController.getUsers);
-router.put("/users/:userId/block", adminController.toggleUserBlock);
+router.post("/users/:userId/block", adminController.toggleUserBlock);
 router.post("/add-amount", adminController.addAmountToWallet);
 router.get("/pending-transactions", adminController.getPendingTransactions);
 router.post("/approve-recharge/:txId", adminController.approveRecharge);
