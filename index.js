@@ -17,10 +17,12 @@ app.use(express.json());
 
 // CORS configuration - allow both production and development
 const allowedOrigins = [
-  process.env.CLIENT_URL, // Production URL from .env
-  'http://localhost:5173', // Local development
-  'http://localhost:3000', // Alternative local dev port
+  process.env.CLIENT_URL,   // Production domain (later)
+  'http://localhost:5173',  // Vite dev
+  'http://localhost:4173',  // Vite preview (IMPORTANT)
+  'http://localhost:3000',  // Backend same-origin
 ];
+
 
 app.use(
   cors({

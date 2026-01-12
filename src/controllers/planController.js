@@ -9,12 +9,12 @@ const seedPlans = async (req, res) => {
     }
 
     const plans = [
-      { name: "Plan 1", investAmount: 999,   dailyIncome: 100,   durationDays: 99, totalIncome: 9900 },
-      { name: "Plan 2", investAmount: 2500,  dailyIncome: 300,   durationDays: 99, totalIncome: 29700 },
-      { name: "Plan 3", investAmount: 5000,  dailyIncome: 800,   durationDays: 99, totalIncome: 79200 },
-      { name: "Plan 4", investAmount: 8000,  dailyIncome: 2000,  durationDays: 99, totalIncome: 198000 },
-      { name: "Plan 5", investAmount: 12000, dailyIncome: 3600,  durationDays: 99, totalIncome: 356400 },
-      { name: "Plan 6", investAmount: 20000, dailyIncome: 8000,  durationDays: 99, totalIncome: 792000 },
+      { name: "Plan 1", investAmount: 999, dailyIncome: 80, durationDays: 99, totalIncome: 7920 },
+      { name: "Plan 2", investAmount: 3000, dailyIncome: 400, durationDays: 99, totalIncome: 39600 },
+      { name: "Plan 3", investAmount: 5000, dailyIncome: 800, durationDays: 99, totalIncome: 79200 },
+      { name: "Plan 4", investAmount: 8000, dailyIncome: 2000, durationDays: 99, totalIncome: 198000 },
+      { name: "Plan 5", investAmount: 12000, dailyIncome: 3600, durationDays: 99, totalIncome: 356400 },
+      { name: "Plan 6", investAmount: 20000, dailyIncome: 8000, durationDays: 99, totalIncome: 792000 },
       { name: "Plan 7", investAmount: 30000, dailyIncome: 15000, durationDays: 99, totalIncome: 1485000 },
       { name: "Plan 8", investAmount: 50000, dailyIncome: 35000, durationDays: 99, totalIncome: 3465000 },
     ];
