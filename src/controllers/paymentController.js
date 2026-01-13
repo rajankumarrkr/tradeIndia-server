@@ -96,6 +96,16 @@ const createWithdrawal = async (req, res) => {
 
     const gst = (amount * GST_PERCENT) / 100;
 
+    const bankDetails = {
+      accountHolder: bankAccount.accountHolder,
+      bankName: bankAccount.bankName,
+      accountNumber: bankAccount.accountNumber,
+      ifsc: bankAccount.ifsc,
+      branch: bankAccount.branch || "N/A",
+    };
+
+    console.log(`Creating withdrawal for user ${userId}, amount ${amount}, bank: ${bankDetails.accountNumber}`);
+
     const tx = await Transaction.create({
       user: userId,
       type: "withdraw",
@@ -103,6 +113,7 @@ const createWithdrawal = async (req, res) => {
       status: "pending",
       meta: {
         bankAccountId: bankAccount._id,
+        bankDetails,
         gst,
       },
     });

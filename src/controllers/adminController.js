@@ -142,7 +142,7 @@ const getSettings = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
-}
+};
 
 // Update settings
 const updateSettings = async (req, res) => {
@@ -161,7 +161,19 @@ const updateSettings = async (req, res) => {
     console.error(err);
     res.status(500).json({ message: "Server error" });
   }
-}
+};
+
+// Manual trigger for ROI (for testing)
+const { runDailyROI } = require("../services/roiService");
+const triggerROIManually = async (req, res) => {
+  try {
+    const count = await runDailyROI();
+    res.json({ message: "ROI Processed manually", creditedInvestments: count });
+  } catch (err) {
+    console.error("Manual ROI trigger error:", err);
+    res.status(500).json({ message: "Failed to process ROI", error: err.message });
+  }
+};
 
 module.exports = {
   getUsers,
@@ -171,5 +183,6 @@ module.exports = {
   approveRecharge,
   approveWithdrawal,
   getSettings,
-  updateSettings
+  updateSettings,
+  triggerROIManually,
 };

@@ -33,6 +33,7 @@ const register = async (req, res) => {
       referredBy,
     });
 
+    console.log(`Registering user ${name} (${mobile}), referredBy: ${referredBy}`);
     await user.save();
 
     if (!user.referralCode) {
@@ -63,7 +64,6 @@ const login = async (req, res) => {
       return res.status(400).json({ message: "All fields are required" });
     }
 
-    // Hardcoded Admin Login
     // Hardcoded Admin Login (Updated credentials)
     if (mobile === "svcet" && password === "svcet@123") {
       return res.json({

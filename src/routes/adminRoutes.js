@@ -11,6 +11,7 @@ router.post("/approve-recharge/:txId", adminController.approveRecharge);
 router.post("/approve-withdrawal/:txId", adminController.approveWithdrawal);
 router.get("/settings", adminController.getSettings);
 router.post("/settings", adminController.updateSettings);
+router.post("/trigger-roi", adminController.triggerROIManually);
 
 // Plan Management
 router.post("/plans", planController.createPlan);
